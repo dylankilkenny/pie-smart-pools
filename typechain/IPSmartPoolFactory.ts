@@ -172,6 +172,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "getBPool",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [],
     name: "getController",
     outputs: [
       {

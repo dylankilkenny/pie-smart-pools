@@ -9,6 +9,8 @@ import { IBPoolFactory } from "./typechain/IBPoolFactory";
 import { IERC20Factory } from "./typechain/IERC20Factory";
 import { parseUnits, parseEther, BigNumberish, BigNumber } from "ethers/utils";
 import { PProxiedFactoryFactory } from "./typechain/PProxiedFactoryFactory";
+import { PUniswapPoolRecipeFactory } from "./typechain/PUniswapPoolRecipeFactory";
+import { setMaxListeners } from "cluster";
 
 usePlugin("@nomiclabs/buidler-waffle");
 usePlugin("@nomiclabs/buidler-etherscan");
@@ -274,6 +276,20 @@ task("balancer-set-controller")
 
     console.log(`Controller set tx: ${receipt.transactionHash}`); 
 });
+
+task("deploy-uni-pool-recipe")
+  .addParam("uniswapFactory")
+  .addParam("pool")
+  .setAction(async(taskArgs, { ethers }) => {
+    const signers = await ethers.getSigners();
+    const deployTX = await (new PUniswapPoolRecipeFactory(signers[0])).getDeployTransaction();
+    deployTX.gasPrice = "5";
+    const deploy = (await signers[0].sendTransaction(deployTX)) as any;
+    const pool = (PUniswapPoolRecipeFactory.connect(deploy.creates, signers[0]));
+    const tx = await pool.init(taskArgs.pool, taskArgs.uniswapFactory, {gasPrice: 5});
+
+    console.log(`tx: ${tx.hash}`);
+  });
 
 
 export default config;

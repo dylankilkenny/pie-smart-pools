@@ -30,6 +30,8 @@ interface IPSmartPoolInterface extends Interface {
       encode([_amount]: [BigNumberish]): string;
     }>;
 
+    getBPool: TypedFunctionDescription<{ encode([]: []): string }>;
+
     getController: TypedFunctionDescription<{ encode([]: []): string }>;
 
     getTokens: TypedFunctionDescription<{ encode([]: []): string }>;
@@ -106,6 +108,8 @@ export class IPSmartPool extends Contract {
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
 
+    getBPool(): Promise<string>;
+
     getController(): Promise<string>;
 
     getTokens(): Promise<string[]>;
@@ -155,6 +159,8 @@ export class IPSmartPool extends Contract {
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
 
+  getBPool(): Promise<string>;
+
   getController(): Promise<string>;
 
   getTokens(): Promise<string[]>;
@@ -203,6 +209,8 @@ export class IPSmartPool extends Contract {
     calcTokensForAmount(_amount: BigNumberish): Promise<BigNumber>;
 
     exitPool(_amount: BigNumberish): Promise<BigNumber>;
+
+    getBPool(): Promise<BigNumber>;
 
     getController(): Promise<BigNumber>;
 

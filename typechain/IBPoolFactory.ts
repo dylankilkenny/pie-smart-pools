@@ -400,6 +400,50 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
+        name: "tokenIn",
+        type: "address"
+      },
+      {
+        internalType: "uint256",
+        name: "maxAmountIn",
+        type: "uint256"
+      },
+      {
+        internalType: "address",
+        name: "tokenOut",
+        type: "address"
+      },
+      {
+        internalType: "uint256",
+        name: "tokenAmountOut",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "maxPrice",
+        type: "uint256"
+      }
+    ],
+    name: "swapExactAmountOut",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "tokenAmountIn",
+        type: "uint256"
+      },
+      {
+        internalType: "uint256",
+        name: "spotPriceAfter",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "token",
         type: "address"
       }

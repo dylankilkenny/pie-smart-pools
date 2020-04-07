@@ -319,7 +319,7 @@ contract PBasicSmartPool is IPSmartPool, PCToken, ReentryProtection {
         @notice Get the address of the underlying Balancer pool
         @return The address of the underlying balancer pool
     */
-    function getBPool() external view returns(address) {
+    function getBPool() external view override returns(address) {
         return address(lpbs().bPool);
     }
 

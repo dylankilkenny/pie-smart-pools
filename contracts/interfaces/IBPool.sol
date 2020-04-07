@@ -29,6 +29,16 @@ interface IBPool {
     function getSwapFee() external view returns (uint256);
     function gulp(address token) external;
 
+    function swapExactAmountOut(
+        address tokenIn,
+        uint maxAmountIn,
+        address tokenOut,
+        uint tokenAmountOut,
+        uint maxPrice
+    )
+        external
+        returns (uint tokenAmountIn, uint spotPriceAfter);
+
     function calcPoolOutGivenSingleIn(
         uint tokenBalanceIn,
         uint tokenWeightIn,
