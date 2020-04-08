@@ -170,12 +170,12 @@ interface PSingleAssetJoinExitRecipeInterface extends Interface {
       ]): string;
     }>;
 
-    exitswapExternAmountOut: TypedFunctionDescription<{
-      encode([tokenOut, tokenAmountOut]: [string, BigNumberish]): string;
-    }>;
-
     exitswapPoolAmountIn: TypedFunctionDescription<{
-      encode([tokenOut, poolAmountIn]: [string, BigNumberish]): string;
+      encode([_tokenOut, _poolAmountIn, _minAmountOut]: [
+        string,
+        BigNumberish,
+        BigNumberish
+      ]): string;
     }>;
 
     joinswapExternAmountIn: TypedFunctionDescription<{
@@ -186,14 +186,25 @@ interface PSingleAssetJoinExitRecipeInterface extends Interface {
       ]): string;
     }>;
 
-    joinswapPoolAmountOut: TypedFunctionDescription<{
-      encode([tokenIn, poolAmountOut]: [string, BigNumberish]): string;
-    }>;
+    oSlot: TypedFunctionDescription<{ encode([]: []): string }>;
 
     pool: TypedFunctionDescription<{ encode([]: []): string }>;
+
+    pullToken: TypedFunctionDescription<{ encode([_token]: [string]): string }>;
+
+    transferOwnership: TypedFunctionDescription<{
+      encode([_newOwner]: [string]): string;
+    }>;
   };
 
-  events: {};
+  events: {
+    OwnerChanged: TypedEventDescription<{
+      encodeTopics([previousOwner, newOwner]: [
+        string | null,
+        string | null
+      ]): string[];
+    }>;
+  };
 }
 
 export class PSingleAssetJoinExitRecipe extends Contract {
@@ -322,15 +333,10 @@ export class PSingleAssetJoinExitRecipe extends Contract {
       swapFee: BigNumberish
     ): Promise<BigNumber>;
 
-    exitswapExternAmountOut(
-      tokenOut: string,
-      tokenAmountOut: BigNumberish,
-      overrides?: TransactionOverrides
-    ): Promise<ContractTransaction>;
-
     exitswapPoolAmountIn(
-      tokenOut: string,
-      poolAmountIn: BigNumberish,
+      _tokenOut: string,
+      _poolAmountIn: BigNumberish,
+      _minAmountOut: BigNumberish,
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
 
@@ -341,13 +347,19 @@ export class PSingleAssetJoinExitRecipe extends Contract {
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
 
-    joinswapPoolAmountOut(
-      tokenIn: string,
-      poolAmountOut: BigNumberish,
+    oSlot(): Promise<string>;
+
+    pool(): Promise<string>;
+
+    pullToken(
+      _token: string,
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
 
-    pool(): Promise<string>;
+    transferOwnership(
+      _newOwner: string,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
   };
 
   BONE(): Promise<BigNumber>;
@@ -446,15 +458,10 @@ export class PSingleAssetJoinExitRecipe extends Contract {
     swapFee: BigNumberish
   ): Promise<BigNumber>;
 
-  exitswapExternAmountOut(
-    tokenOut: string,
-    tokenAmountOut: BigNumberish,
-    overrides?: TransactionOverrides
-  ): Promise<ContractTransaction>;
-
   exitswapPoolAmountIn(
-    tokenOut: string,
-    poolAmountIn: BigNumberish,
+    _tokenOut: string,
+    _poolAmountIn: BigNumberish,
+    _minAmountOut: BigNumberish,
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
 
@@ -465,15 +472,26 @@ export class PSingleAssetJoinExitRecipe extends Contract {
     overrides?: TransactionOverrides
   ): Promise<ContractTransaction>;
 
-  joinswapPoolAmountOut(
-    tokenIn: string,
-    poolAmountOut: BigNumberish,
-    overrides?: TransactionOverrides
-  ): Promise<ContractTransaction>;
+  oSlot(): Promise<string>;
 
   pool(): Promise<string>;
 
-  filters: {};
+  pullToken(
+    _token: string,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    _newOwner: string,
+    overrides?: TransactionOverrides
+  ): Promise<ContractTransaction>;
+
+  filters: {
+    OwnerChanged(
+      previousOwner: string | null,
+      newOwner: string | null
+    ): EventFilter;
+  };
 
   estimate: {
     BONE(): Promise<BigNumber>;
@@ -572,14 +590,10 @@ export class PSingleAssetJoinExitRecipe extends Contract {
       swapFee: BigNumberish
     ): Promise<BigNumber>;
 
-    exitswapExternAmountOut(
-      tokenOut: string,
-      tokenAmountOut: BigNumberish
-    ): Promise<BigNumber>;
-
     exitswapPoolAmountIn(
-      tokenOut: string,
-      poolAmountIn: BigNumberish
+      _tokenOut: string,
+      _poolAmountIn: BigNumberish,
+      _minAmountOut: BigNumberish
     ): Promise<BigNumber>;
 
     joinswapExternAmountIn(
@@ -588,11 +602,12 @@ export class PSingleAssetJoinExitRecipe extends Contract {
       _minPoolAmountOut: BigNumberish
     ): Promise<BigNumber>;
 
-    joinswapPoolAmountOut(
-      tokenIn: string,
-      poolAmountOut: BigNumberish
-    ): Promise<BigNumber>;
+    oSlot(): Promise<BigNumber>;
 
     pool(): Promise<BigNumber>;
+
+    pullToken(_token: string): Promise<BigNumber>;
+
+    transferOwnership(_newOwner: string): Promise<BigNumber>;
   };
 }

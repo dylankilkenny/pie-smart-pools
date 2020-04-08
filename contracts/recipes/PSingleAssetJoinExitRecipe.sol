@@ -30,7 +30,7 @@ contract PSingleAssetJoinExitRecipe is BMath, Ownable {
             uint256 totalWeight = bPool.getTotalDenormalizedWeight();
             uint256 swapFee = bPool.getSwapFee();
             // Some weird rounding  happening so we skim 1% of the input
-            poolAmountOut = calcPoolOutGivenSingleIn(tokenBalanceIn, tokenWeightIn, poolSupply, totalWeight, _tokenAmountIn, swapFee) * 99 / 100;
+            poolAmountOut = calcPoolOutGivenSingleIn(tokenBalanceIn, tokenWeightIn, poolSupply, totalWeight, _tokenAmountIn, swapFee * 2);
         }
 
         require(poolAmountOut >= _minPoolAmountOut, "AMOUNT TOO LOW");
@@ -69,16 +69,52 @@ contract PSingleAssetJoinExitRecipe is BMath, Ownable {
         token.transfer(msg.sender, token.balanceOf(address(this)) - 1);
     }
 
-    // function joinswapPoolAmountOut(address tokenIn, uint poolAmountOut) external returns(uint256) {
+    // calcPoolOutGivenSingleIn(tokenBalanceIn, tokenWeightIn, poolSupply, totalWeight, _tokenAmountIn, swapFee * 2);
+    function calcPoolOutGivenSingleIn(address _tokenIn, uint256 _tokenAmountIn) external view returns(uint256) {
+        uint256 tokenBalanceIn = bPool.getBalance(_tokenIn);
+        uint256 tokenWeightIn = bPool.getDenormalizedWeight(_tokenIn);
+        uint256 poolSupply = pool.totalSupply();
+        uint256 totalWeight = bPool.getTotalDenormalizedWeight();
+        uint256 swapFee = bPool.getSwapFee();
+        // Some weird rounding  happening so we skim 1% of the input
+        uint256 poolAmountOut = calcPoolOutGivenSingleIn(tokenBalanceIn, tokenWeightIn, poolSupply, totalWeight, _tokenAmountIn, swapFee * 2);
 
-    // }
+        return poolAmountOut;
+    }
+    
+    function exitswapPoolAmountIn(address _tokenOut, uint256 _poolAmountIn, uint256 _minAmountOut) external returns(uint256) {
+        pool.transferFrom(msg.sender, address(this), _poolAmountIn);
+        pool.exitPool(_poolAmountIn);
+        
+        address[] memory tokens = bPool.getCurrentTokens();
 
-    // function exitswapPoolAmountIn(address tokenOut, uint poolAmountIn) external returns(uint256) {
+        for(uint i = 0; i < tokens.length; i++) {
+            if(tokens[i] == _tokenOut) {
+                continue;
+            }
 
-    // }
+            IERC20 token = IERC20(tokens[i]);
+            token.approve(address(bPool), uint256(-1));
+            bPool.swapExactAmountIn(tokens[i], token.balanceOf(address(this)), _tokenOut, 0, uint256(-1));
+        }
 
-    // function exitswapExternAmountOut(address tokenOut, uint tokenAmountOut) external returns(uint256){
 
-    // }
+        IERC20 tokenOut = IERC20(_tokenOut);
+        uint256 tokenOutBalance = tokenOut.balanceOf(address(this));
+        require(tokenOutBalance >= _minAmountOut);
+
+        tokenOut.transfer(msg.sender, tokenOutBalance);
+        return tokenOutBalance;
+    }
+
+    function calcSingleOutGivenPoolIn(address _tokenOut, uint256 _poolIn) external view returns(uint256) {
+        uint256 tokenBalanceOut = bPool.getBalance(_tokenOut);
+        uint256 tokenWeightOut = bPool.getDenormalizedWeight(_tokenOut);
+        uint256 poolSupply = pool.totalSupply();
+        uint256 totalWeight = bPool.getTotalDenormalizedWeight();
+        uint256 swapFee = bPool.getSwapFee();
+
+        return calcSingleOutGivenPoolIn(tokenBalanceOut, tokenWeightOut, poolSupply, totalWeight, _poolIn, swapFee * 2);
+    }
 
 }
