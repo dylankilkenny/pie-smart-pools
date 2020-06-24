@@ -334,7 +334,7 @@ contract PBasicSmartPool is IPSmartPool, PCToken, ReentryProtection {
     }
   }
 
-  /** 
+  /**
         @notice Get the address of the controller
         @return The address of the pool
     */
@@ -342,7 +342,7 @@ contract PBasicSmartPool is IPSmartPool, PCToken, ReentryProtection {
     return lpbs().controller;
   }
 
-  /** 
+  /**
         @notice Get the address of the public swap setter
         @return The public swap setter address
     */
